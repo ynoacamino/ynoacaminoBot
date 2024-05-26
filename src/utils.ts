@@ -45,6 +45,5 @@ export const deleteFile = (path: string) => {
 export const getUrl = async (query: string) => {
   const video = await ytsr.searchOne(query);
 
-  console.log({ video }, video.url);
   return video.url;
 };
