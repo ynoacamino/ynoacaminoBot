@@ -33,7 +33,6 @@ client.on(Events.MessageCreate, async (message) => {
     if (!isUrl(linkVideo)) {
       message.reply(`Buscando:"${linkVideo}" en youtube`);
       linkVideo = await getUrl(linkVideo);
-      return;
     }
 
     const voiceChannel = message.member?.voice.channel;
