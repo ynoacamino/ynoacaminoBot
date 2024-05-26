@@ -53,18 +53,18 @@ client.on(Events.MessageCreate, async (message) => {
     const route = path.join(process.cwd(), 'public', musicName);
 
     let videoTitle = '';
+    let video = null;
 
     try {
-      const video = await dowloadVideo(linkVideo, route);
+      video = await dowloadVideo(linkVideo, route);
       videoTitle = video.videoDetails.title;
     } catch (e) {
       message.reply((e as Error).message);
       return;
     }
-
     const audioPlayer = createAudioPlayer();
 
-    const audioResource = createAudioResource(route);
+    const audioResource = createAudioResource(video.path);
 
     audioPlayer.play(audioResource);
 

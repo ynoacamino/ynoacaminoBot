@@ -22,7 +22,7 @@ export const dowloadVideo = async (url: string, path: string) => {
       });
     });
 
-    return info;
+    return { ...info, path };
   } catch (error) {
     throw new Error('Error al descargar el audip');
   }
