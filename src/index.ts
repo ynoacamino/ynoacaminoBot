@@ -86,6 +86,12 @@ client.on(Events.MessageCreate, async (message) => {
       deleteFile(route);
       connection.destroy();
     });
+
+    audioPlayer.on(AudioPlayerStatus.Paused, () => {
+      console.log('Audio pausado', (new Date()).toISOString());
+      deleteFile(route);
+      connection.destroy();
+    });
   }
 
   if (message.content === 'ynoa/stop') {

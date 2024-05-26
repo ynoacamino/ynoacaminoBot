@@ -1,6 +1,6 @@
 import ytdl from 'ytdl-core';
 import fs from 'node:fs';
-import ytsr from 'youtube-sr';
+import { YouTube as ytsr } from 'youtube-sr';
 
 export const dowloadVideo = async (url: string, path: string) => {
   const writeAudio = ytdl(url, {
@@ -43,7 +43,7 @@ export const deleteFile = (path: string) => {
 };
 
 export const getUrl = async (query: string) => {
-  const video = await ytsr.default.searchOne(query);
+  const video = await ytsr.searchOne(query);
 
   console.log({ video }, video.url);
   return video.url;
