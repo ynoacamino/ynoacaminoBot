@@ -2,13 +2,14 @@ import { Client, Events } from 'discord.js';
 import {
   AudioPlayerStatus, createAudioPlayer, createAudioResource, joinVoiceChannel,
 } from '@discordjs/voice';
-import ytdl from 'ytdl-core';
 import { v4 as uuidv4 } from 'uuid';
 
-import fs from 'node:fs';
 import path from 'node:path';
 
 import 'dotenv/config';
+import {
+  deleteFile, dowloadVideo, getUrl, isUrl,
+} from './utils';
 
 const client = new Client({
   intents: 3276799,
@@ -26,11 +27,12 @@ client.on(Events.MessageCreate, async (message) => {
     message.reply(`Pong! ${serverTime() - userTime}ms`);
   }
 
-  if (message.content.startsWith('ynoa ')) {
-    const linkVideo = message.content.slice(5);
+  if (message.content.startsWith('ynoa/play ')) {
+    let linkVideo = message.content.slice(10);
 
-    if (!linkVideo.startsWith('https://www.youtube.com/watch?v=')) {
-      message.reply('El link no es valido');
+    if (!isUrl(linkVideo)) {
+      message.reply(`Buscando:"${linkVideo}" en youtube`);
+      linkVideo = await getUrl(linkVideo);
       return;
     }
 
@@ -51,35 +53,19 @@ client.on(Events.MessageCreate, async (message) => {
 
     const route = path.join(process.cwd(), 'public', musicName);
 
-    const writeAudio = ytdl(linkVideo, {
-      filter: 'audioonly',
-      quality: 'highestaudio',
-    }).pipe(fs.createWriteStream(route));
+    let videoTitle = '';
 
-    const audioDownload = await new Promise((resolve, reject) => {
-      writeAudio.on('finish', () => {
-        console.log('Descarga finalizada');
-        resolve('succes');
-      });
-
-      writeAudio.on('error', (error) => {
-        console.error(error);
-        reject();
-      });
-    });
-
-    if (audioDownload !== 'succes') {
-      message.reply('Hubo un error al descargar el audio');
+    try {
+      const video = await dowloadVideo(linkVideo, route);
+      videoTitle = video.videoDetails.title;
+    } catch (e) {
+      message.reply((e as Error).message);
       return;
     }
 
-    const audioResource = createAudioResource(route, {
-      metadata: {
-        title: 'Audio de prueba',
-      },
-    });
-
     const audioPlayer = createAudioPlayer();
+
+    const audioResource = createAudioResource(route);
 
     audioPlayer.play(audioResource);
 
@@ -91,25 +77,19 @@ client.on(Events.MessageCreate, async (message) => {
 
     audioPlayer.on(AudioPlayerStatus.Playing, () => {
       console.log('Reproduciendo audio', (new Date()).toISOString());
+
+      message.reply(`Tocando a música: ${videoTitle}`);
     });
 
     audioPlayer.on(AudioPlayerStatus.Idle, () => {
       console.log('Audio terminado', (new Date()).toISOString());
+
+      deleteFile(route);
       connection.destroy();
     });
-
-    audioPlayer.on(AudioPlayerStatus.Paused, () => {
-      console.log('Audio pausado', (new Date()).toISOString());
-    });
-
-    audioPlayer.on(AudioPlayerStatus.AutoPaused, () => {
-      console.log('Audio pausado automáticamente', (new Date()).toISOString());
-    });
-
-    message.reply(`Tocando a música: ${musicName}`);
   }
 
-  if (message.content === 'stop') {
+  if (message.content === 'ynoa/stop') {
     const voiceChannel = message.member?.voice.channel;
 
     if (!voiceChannel) {
