@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx --watch src/index.ts",
     "build": "tsc && tsc-alias",
-    "start": "mkdir public && node dist/index.js",
+    "start": "rm -rf public && mkdir public && node dist/index.js",
     "lint": "eslint ."
   },
   "keywords": [],
@@ -33,6 +33,7 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "ffmpeg-static": "^5.2.0",
     "libsodium-wrappers": "^0.7.13",
+    "tsx": "^4.11.0",
     "uuid": "^9.0.1",
     "youtube-sr": "^4.3.11",
     "ytdl-core": "^4.11.5"
