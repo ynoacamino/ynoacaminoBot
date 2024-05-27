@@ -1,6 +1,7 @@
 import ytdl from 'ytdl-core';
 import fs from 'node:fs';
 import { YouTube as ytsr } from 'youtube-sr';
+import { join } from 'node:path';
 
 export const dowloadVideo = async (url: string, path: string) => {
   const writeAudio = ytdl(url, {
@@ -21,6 +22,8 @@ export const dowloadVideo = async (url: string, path: string) => {
         reject();
       });
     });
+
+    console.log(fs.readdirSync(join(process.cwd(), 'public')));
 
     return { ...info, path };
   } catch (error) {
