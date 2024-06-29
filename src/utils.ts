@@ -2,6 +2,7 @@ import ytdl from 'ytdl-core';
 import fs from 'node:fs';
 import { YouTube as ytsr } from 'youtube-sr';
 import { join } from 'node:path';
+import { PATH } from './config';
 
 export const dowloadVideo = async (url: string, path: string) => {
   const writeAudio = ytdl(url, {
@@ -49,4 +50,10 @@ export const getUrl = async (query: string) => {
   const video = await ytsr.searchOne(query);
 
   return video.url;
+};
+
+export const deleteAllFiles = () => {
+  fs.readdirSync(PATH).forEach((file) => {
+    fs.unlinkSync(join(PATH, file));
+  });
 };
