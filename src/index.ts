@@ -11,6 +11,10 @@ import {
   deleteFile, dowloadVideo, getUrl, isUrl,
 } from './utils';
 
+const PATH = process.env.RAILWAY_VOLUME_MOUNT_PATH || path.join(process.cwd(), 'public');
+
+console.log('Ruta:', PATH);
+
 const client = new Client({
   intents: 3276799,
 });
@@ -20,7 +24,7 @@ client.on(Events.ClientReady, async () => {
 });
 
 client.on(Events.MessageCreate, async (message) => {
-  if (message.content === 'ping') {
+  if (message.content === 'ynoa/ping') {
     const userTime = message.createdTimestamp;
     const serverTime = Date.now;
 
@@ -50,7 +54,7 @@ client.on(Events.MessageCreate, async (message) => {
 
     const musicName = `${uuidv4()}.mp3`;
 
-    const route = path.join(process.cwd(), 'public', musicName);
+    const route = path.join(PATH, musicName);
 
     let videoTitle = '';
     let video = null;
