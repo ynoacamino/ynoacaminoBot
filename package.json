@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx --watch src/index.ts",
     "build": "tsc && tsc-alias",
-    "start": "rm -rf public && mkdir public && node dist/index.js",
+    "start": "rm -rf public/* && node dist/index.js",
     "deploy": "pnpm run build && pnpm run start",
     "lint": "eslint ."
   },
