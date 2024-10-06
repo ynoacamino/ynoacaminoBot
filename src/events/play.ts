@@ -3,13 +3,10 @@ import {
   AudioPlayerStatus, createAudioPlayer, createAudioResource, joinVoiceChannel,
 } from '@discordjs/voice';
 
-import { v4 as uuidv4 } from 'uuid';
-import path from 'node:path';
 import {
   deleteAllFiles,
   dowloadVideo, getUrl, isUrl,
 } from '../utils';
-import { PATH } from '../config';
 
 export const play = async (message: Message<boolean>, comand: string) => {
   if (!message.content.startsWith(comand)) return;
@@ -36,15 +33,13 @@ export const play = async (message: Message<boolean>, comand: string) => {
     adapterCreator: voiceChannel.guild.voiceAdapterCreator,
   });
 
-  const musicName = `${uuidv4()}.mp3`;
-
-  const route = path.join(PATH, musicName);
-
   let videoTitle = '';
   let video = null;
 
   try {
-    video = await dowloadVideo(linkVideo, route);
+    console.log('Descargando video');
+    console.log('Link:', linkVideo);
+    video = await dowloadVideo(linkVideo);
     videoTitle = video.videoDetails.title;
   } catch (e) {
     message.reply((e as Error).message);
