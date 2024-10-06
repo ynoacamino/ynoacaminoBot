@@ -1,0 +1,20 @@
+# Ignorar directorios de dependencias
+node_modules
+vendor
+
+# Ignorar archivos de compilación
+dist
+build
+
+# Ignorar archivos de logs
+*.log
+
+# Ignorar archivos temporales del sistema operativo
+*.swp
+*.tmp
+*.bak
+*.old
+
+# Ignorar archivos de configuración de IDE
+.vscode/
+.idea/
