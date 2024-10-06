@@ -2,28 +2,28 @@ import ytdl from 'ytdl-core';
 import fs from 'node:fs';
 import { YouTube as ytsr } from 'youtube-sr';
 import { join } from 'node:path';
-import { Downloader } from 'ytdl-mp3';
+import { exec } from 'node:child_process';
 import { PATH } from './config';
 
-export const dowloadVideo = async (url: string) => {
-  const dowloader = new Downloader({
-    getTags: true,
-    outputDir: PATH,
-  });
-
+export const dowloadVideo = async (url: string, path: string) => {
   try {
     const info = await ytdl.getInfo(url, { lang: 'es' });
 
-    const dowloadedSong = await dowloader.downloadSong(url);
+    const res = await new Promise((resolve, reject) => {
+      exec(`yt-dlp ${url} -f "ba" -o ${path}`, (error, stdout) => {
+        if (error) {
+          console.error('Error al descargar el video', error);
+          reject(error);
+          return;
+        }
+        resolve(stdout);
+      });
+    });
 
-    console.log({ dowloadedSong });
-
-    console.log(fs.readdirSync(join(process.cwd(), 'public')));
-
-    return { ...info, path: dowloadedSong };
+    return { ...info, path, res };
   } catch (error) {
     console.error('Error al descargar el video', error);
-    throw new Error('Error al descargar el audip');
+    throw new Error('Error al descargar el audio');
   }
 };
 

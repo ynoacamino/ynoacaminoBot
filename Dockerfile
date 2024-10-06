@@ -1,4 +1,4 @@
-FROM node:lts-alpine3.20
+FROM node:lts-alpine
 
 WORKDIR /usr/src/app
 
@@ -11,5 +11,9 @@ COPY . .
 RUN npm run build
 
 RUN npm prune --production
+
+RUN apk add --no-cache python3 py3-pip
+
+RUN pip install yt-dlp --break-system-packages
 
 CMD [ "npm", "run", "start"]

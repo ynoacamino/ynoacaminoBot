@@ -5,3 +5,8 @@ package-lock.json
 pnpm-lock.yaml
 .env
 .env.local
+
+bin
+include
+lib
+lib64

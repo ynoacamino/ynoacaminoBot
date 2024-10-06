@@ -3,10 +3,13 @@ import {
   AudioPlayerStatus, createAudioPlayer, createAudioResource, joinVoiceChannel,
 } from '@discordjs/voice';
 
+import { join } from 'node:path';
 import {
   deleteAllFiles,
   dowloadVideo, getUrl, isUrl,
 } from '../utils';
+
+import { PATH } from '../config';
 
 export const play = async (message: Message<boolean>, comand: string) => {
   if (!message.content.startsWith(comand)) return;
@@ -36,10 +39,10 @@ export const play = async (message: Message<boolean>, comand: string) => {
   let videoTitle = '';
   let video = null;
 
+  const songname = `${crypto.randomUUID()}.m4a`;
+
   try {
-    console.log('Descargando video');
-    console.log('Link:', linkVideo);
-    video = await dowloadVideo(linkVideo);
+    video = await dowloadVideo(linkVideo, join(PATH, songname));
     videoTitle = video.videoDetails.title;
   } catch (e) {
     message.reply((e as Error).message);
